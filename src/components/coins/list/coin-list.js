@@ -64,7 +64,7 @@ function CoinsList({ info }) {
         <div className="list">
             {coins.map((coin, index) => <div className="item" key={index}>
                 <div className="image">
-                    {coin.image ? <img src={coin.image} width={40} loading={'lazy'} /> : 'null'}
+                    {coin.image ? <img src={coin.image} width={40} loading={'lazy'} alt={coin.name} /> : 'null'}
                 </div>
                 <div className="first_col">
                     <strong className="name">{coin.name}</strong>
