@@ -1,23 +1,34 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
 import './App.css';
+import CoinsList from './components/coins/list/coin-list'
+
+
+const coinInfo = async () => {
+  const data = await fetch('https://api.coincap.io/v2/assets')
+  const json = data.json()
+  return json
+}
 
 function App() {
+  const [info, setInfo] = useState({});
+
+  useEffect(() => {
+    if (!info.hasOwnProperty('timestamp')) {
+      coinInfo().then(data => {
+        setInfo(data)
+      })
+    }
+  });
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1>Crypto Dashboard</h1>
       </header>
+
+      <section>
+        <CoinsList info={info}></CoinsList>
+      </section>
     </div>
   );
 }
