@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
+import CoinItem from './coin-item';
 import './coin-list.css';
 
 const trackedCoins = ['bitcoin', 'ethereum', 'monero', 'litecoin']
@@ -8,12 +9,6 @@ const client = new W3CWebSocket(`wss://ws.coincap.io/prices?assets=${trackedCoin
 const capitalize = (s) => {
     if (typeof s !== 'string') return ''
     return s.charAt(0).toUpperCase() + s.slice(1)
-}
-
-const valuta = (number) => {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency', currency: 'USD',
-    }).format(number)
 }
 
 function CoinsList({ info }) {
@@ -62,18 +57,7 @@ function CoinsList({ info }) {
 
     return (
         <div className="list">
-            {coins.map((coin, index) => <div className="item" key={index}>
-                <div className="image">
-                    {coin.image ? <img src={coin.image} width={40} loading={'lazy'} alt={coin.name} /> : 'null'}
-                </div>
-                <div className="first_col">
-                    <strong className="name">{coin.name}</strong>
-                    <em className="symbol">{coin.symbol}</em><br />
-                </div>
-                <div className="content">
-                    <strong>{valuta(coin.value)}</strong>
-                </div>
-            </div>)}
+            {coins.map((coin, index) => <CoinItem coin={coin} key={index} />)}
         </div>
     )
 }

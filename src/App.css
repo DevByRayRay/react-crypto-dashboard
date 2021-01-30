@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  position: relative;
 }
 
 .App-header {
@@ -11,5 +12,14 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.overlay {
+  width: 100vw;
+  height: 100vw;
+  position: absolute;
+  top: 0; left: 0;
+  background: rgba(24, 25, 48, 0.8);
+  z-index: -1;
 }
 

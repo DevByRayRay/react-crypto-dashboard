@@ -29,6 +29,7 @@ function App() {
       <section>
         <CoinsList info={info}></CoinsList>
       </section>
+      <div className="overlay"></div>
     </div>
   );
 }
