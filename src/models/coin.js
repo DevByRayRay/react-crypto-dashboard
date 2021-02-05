@@ -22,8 +22,9 @@ export class Coin {
         this.rank_delta = coin.rank_delta
         this.high = coin.high
         this.high_timestamp = coin.high_timestamp
-        this['1d'] = new CoinVolume({ ...coin.['1d'] })
-        this['30d'] = new CoinVolume({ ...coin.['30d'] })
+        this['1d'] = new CoinVolume({ ...coin['1d'] })
+        this['30d'] = new CoinVolume({ ...coin['30d'] })
+        this.history = coin.history
     }
 }
 

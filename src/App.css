@@ -24,4 +24,11 @@
   background: rgba(24, 25, 48, 0.8);
   z-index: -1;
 }
+.list {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  gap: 1rem;
+  padding: 2rem;
+}
 

@@ -1,16 +1,16 @@
-import React, { useState, lazy, Suspense } from 'react';
+import React, { useState, lazy, Suspense, useRef, useEffect } from 'react';
 import { Img } from 'react-image'
+import { format, formatRFC3339, subHours } from 'date-fns';
+import Chart from 'chart.js';
+
 import './coin-item.css'
+
 
 function valuta(number) {
     const parsedNr = isNaN(number) ? 0 : parseFloat(number)
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency', currency: 'USD',
+    return new Intl.NumberFormat('nl-NL', {
+        style: 'currency', currency: 'EUR',
     }).format(parsedNr)
-}
-
-function coinWorth(coinNumber, coinPrice) {
-    return coinPrice * coinNumber
 }
 
 function CoinImage({ alt, source, fallback }) {
@@ -25,6 +25,9 @@ function CoinItem({ coin }) {
     const [price, setPrice] = useState(0)
     const [mainValuta, setMainValuta] = useState(0)
     const [edit, setEdit] = useState(false)
+    const historyGraph = useRef(null)
+
+    const ctx = document.getElementById('myChart');
 
     // console.log('coin: ', coin)
 
@@ -35,15 +38,61 @@ function CoinItem({ coin }) {
         setEdit(editMode)
     }
 
-    function getImage(symbol) {
-        const symbolName = symbol.toLowerCase()
-        const localIcon = lazy(() => import(`../images/${symbolName}.svg`));
-        console.log('localIcon: ', localIcon)
-        if (localIcon) {
-            return localIcon
-        } else {
-            return lazy(() => import(`../images/NOTFOUND.svg`));
+    useEffect(() => {
+        if (coin.hasOwnProperty('history')) {
+
+            getPriceHistory(coin.history)
         }
+    }, [coin])
+
+    function getPriceHistory(historyData) {
+        if (!historyData?.prices || !historyData?.timestamps || !historyData?.currency) {
+            return
+        }
+
+        const { prices, timestamps, currency } = historyData
+        const labels = timestamps.map((stamp) => format(new Date(stamp), 'HH'))
+
+        const dataConf = {
+            labels: labels,
+            datasets: [
+                {
+                    label: currency,
+                    data: prices,
+                    fill: false,
+                    borderColor: 'rgb(255, 255,255)',
+                }
+            ]
+        }
+
+        const chart = new Chart(historyGraph.current, {
+            type: 'line',
+            data: dataConf,
+            responsive: false,
+            maintainAspectRatio: false,
+            options: {
+                scales: {
+                    x: {
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Hour'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Value'
+                        }
+                    }
+                }
+            }
+        });
+
+        chart.canvas.parentNode.style.height = '300px'
+        chart.canvas.parentNode.style.width = '496px'
+        // chart.canvas.parentNode.style.maxHeight = '100%'
     }
 
     return (
@@ -59,6 +108,9 @@ function CoinItem({ coin }) {
             </div>
             <div className="content">
                 <strong>{valuta(coin.price)}</strong>
+            </div>
+            <div className='graph'>
+                {historyGraph && <div className="graph-wrapper"><canvas ref={historyGraph}></canvas></div>}
             </div>
             <footer className="footer">
                 <button onClick={toggleEdit}>

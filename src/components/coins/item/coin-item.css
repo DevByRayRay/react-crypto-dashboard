@@ -2,8 +2,8 @@
 .item {
     border-radius: 10px;
     display: grid;
-    grid-template-columns: 50px 100px 1fr;
-    grid-template-rows: 1fr 30px;
+    grid-template-columns: 50px 1fr 1fr;
+    grid-template-rows: 50px 250px 30px;
     flex-direction: row;
     width: auto;
     justify-content:space-around;
@@ -15,6 +15,12 @@
 }
 .item:last-child {
     border-bottom: 0;
+}
+.first_col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 1rem;
 }
 .content {
     display: flex;
@@ -36,9 +42,18 @@
     padding: 1rem;
     box-sizing: border-box;
 }
-.footer {
+.graph {
     grid-column: 1/4;
     grid-row: 2;
+    position: relative;
+    overflow: hidden;
+}
+.graph-wrapper {
+    height: 100%;
+}
+.footer {
+    grid-column: 1/4;
+    grid-row: 3;
     display: flex;
     justify-content: flex-end;
     height: 30px;
