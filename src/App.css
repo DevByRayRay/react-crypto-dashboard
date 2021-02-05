@@ -1,6 +1,8 @@
 .App {
   text-align: center;
   position: relative;
+  width: 100vw;
+  min-height: 100vh;
 }
 
 .App-header {
@@ -16,7 +18,7 @@
 
 .overlay {
   width: 100vw;
-  height: 100vw;
+  height: 100%;
   position: absolute;
   top: 0; left: 0;
   background: rgba(24, 25, 48, 0.8);

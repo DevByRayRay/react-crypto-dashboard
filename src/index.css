@@ -8,9 +8,14 @@ body {
   background: #181930;
   color: #fff;
   background: url('https://images.unsplash.com/photo-1536242918817-db5e93c7a0e4?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1650&q=80') no-repeat top center;
+  background-size: cover;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.hidden {
+  display: none;
 }
