@@ -29,24 +29,24 @@ function App() {
     return json
   }
 
-  async function initialRequests() {
-    const coins = await coinInfo()
-
-    const coinNames = coins.map((coin) => coin.symbol)
-
-    const history = await coinHistory(coinNames)
-
-    const mappedCoins = coins.map((item) => {
-      const coinHistory = history.find(it => it.currency === item.currency)
-      return new Coin({ ...item, history: coinHistory })
-    })
-
-    setCoins(mappedCoins)
-  }
 
 
   useEffect(() => {
     console.log('App')
+    async function initialRequests() {
+      const coins = await coinInfo()
+  
+      const coinNames = coins.map((coin) => coin.symbol)
+  
+      const history = await coinHistory(coinNames)
+  
+      const mappedCoins = coins.map((item) => {
+        const coinHistory = history.find(it => it.currency === item.currency)
+        return new Coin({ ...item, history: coinHistory })
+      })
+  
+      setCoins(mappedCoins)
+    }
     initialRequests()
   }, [])
 
