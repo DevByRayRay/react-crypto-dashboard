@@ -1,6 +1,6 @@
-import React, { useState, lazy, Suspense, useRef, useEffect } from 'react';
+import React, { useState, Suspense, useRef, useEffect } from 'react';
 import { Img } from 'react-image'
-import { format, formatRFC3339, subHours } from 'date-fns';
+import { format } from 'date-fns';
 import Chart from 'chart.js';
 
 import './coin-item.css'
@@ -23,7 +23,6 @@ function CoinImage({ alt, source, fallback }) {
 
 function CoinItem({ coin }) {
     const [price, setPrice] = useState(0)
-    const [mainValuta, setMainValuta] = useState(0)
     const [edit, setEdit] = useState(false)
     const historyGraph = useRef(null)
 
@@ -92,7 +91,6 @@ function CoinItem({ coin }) {
 
         chart.canvas.parentNode.style.height = '300px'
         chart.canvas.parentNode.style.width = '496px'
-        // chart.canvas.parentNode.style.maxHeight = '100%'
     }
 
     return (
