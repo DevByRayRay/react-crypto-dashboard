@@ -25,6 +25,7 @@ export class Coin {
         this['1d'] = new CoinVolume({ ...coin['1d'] })
         this['30d'] = new CoinVolume({ ...coin['30d'] })
         this.history = coin.history
+        this.hasHistory = coin.history && coin.history.prices.length > 0 && coin.history.timestamps.length > 0 ? true : false
     }
 }
 

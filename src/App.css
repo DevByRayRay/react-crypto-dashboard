@@ -1,8 +1,7 @@
 .App {
   text-align: center;
   position: relative;
-  width: 100vw;
-  min-height: 100vh;
+  overflow: hidden;
 }
 
 .App-header {

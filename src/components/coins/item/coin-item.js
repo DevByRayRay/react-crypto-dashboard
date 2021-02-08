@@ -1,34 +1,18 @@
 import React, { useState, Suspense, useRef, useEffect } from 'react';
-import { Img } from 'react-image'
-import { format } from 'date-fns';
-import Chart from 'chart.js';
+import FastAverageColor from 'fast-average-color';
 
 import './coin-item.css'
+import { parseValuta } from '../../../services/general/utils'
+import CoinImage, { loadImage } from './coin-image'
+import CoinGraph, { getPriceHistory } from './coin-graph'
 
 
-function valuta(number) {
-    const parsedNr = isNaN(number) ? 0 : parseFloat(number)
-    return new Intl.NumberFormat('nl-NL', {
-        style: 'currency', currency: 'EUR',
-    }).format(parsedNr)
-}
-
-function CoinImage({ alt, source, fallback }) {
-    return <Img
-        src={[source, fallback]}
-        loader={'Loading...'}
-        width={40} loading={'lazy'} alt={alt}
-    />
-}
 
 function CoinItem({ coin }) {
     const [price, setPrice] = useState(0)
     const [edit, setEdit] = useState(false)
     const historyGraph = useRef(null)
-
-    const ctx = document.getElementById('myChart');
-
-    // console.log('coin: ', coin)
+    const coinImage = useRef(null)
 
     function toggleEdit() {
         const editMode = !edit
@@ -40,62 +24,34 @@ function CoinItem({ coin }) {
     useEffect(() => {
         if (coin.hasOwnProperty('history')) {
 
-            getPriceHistory(coin.history)
+        }
+        if (coin.hasOwnProperty('symbol') && coinImage.current) {
+            loadImage(`/icons/${coin.symbol.toLowerCase()}.svg`).then(async (data) => {
+
+
+                const fac = new FastAverageColor();
+
+                try {
+                    const color = await fac.getColorAsync(data)
+                    getPriceHistory(coin.history, historyGraph, color)
+
+                } catch (error) {
+                    getPriceHistory(coin.history, historyGraph)
+                    console.error(error);
+                }
+
+
+            })
         }
     }, [coin])
 
-    function getPriceHistory(historyData) {
-        if (!historyData?.prices || !historyData?.timestamps || !historyData?.currency) {
-            return
-        }
-
-        const { prices, timestamps, currency } = historyData
-        const labels = timestamps.map((stamp) => format(new Date(stamp), 'HH'))
-
-        const dataConf = {
-            labels: labels,
-            datasets: [
-                {
-                    label: currency,
-                    data: prices,
-                    fill: false,
-                    borderColor: 'rgb(255, 255,255)',
-                }
-            ]
-        }
-
-        const chart = new Chart(historyGraph.current, {
-            type: 'line',
-            data: dataConf,
-            responsive: false,
-            maintainAspectRatio: false,
-            options: {
-                scales: {
-                    x: {
-                        display: true,
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Hour'
-                        }
-                    },
-                    y: {
-                        display: true,
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Value'
-                        }
-                    }
-                }
-            }
-        });
-
-        chart.canvas.parentNode.style.height = '300px'
-        chart.canvas.parentNode.style.width = '496px'
-    }
 
     return (
         <div className="item" id={`coin-${coin.name}`}>
             <div className="image">
+                <div className="hidden">
+                    <canvas ref={coinImage} width={40} height={40}></canvas>
+                </div>
                 <Suspense>
                     <CoinImage source={`/icons/${coin.symbol.toLowerCase()}.svg`} fallback={`/icons/NOTFOUND.svg`} alt={coin.name} />
                 </Suspense>
@@ -105,11 +61,9 @@ function CoinItem({ coin }) {
                 <em className="symbol">{coin.symbol}</em><br />
             </div>
             <div className="content">
-                <strong>{valuta(coin.price)}</strong>
+                <strong>{parseValuta(coin.price)}</strong>
             </div>
-            <div className='graph'>
-                {historyGraph && <div className="graph-wrapper"><canvas ref={historyGraph}></canvas></div>}
-            </div>
+            <CoinGraph ref={historyGraph}></CoinGraph>
             <footer className="footer">
                 <button onClick={toggleEdit}>
                     <i className="fa fa-pencil" aria-hidden="true"></i>
